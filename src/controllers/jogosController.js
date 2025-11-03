@@ -2,17 +2,25 @@ import * as JogosModel from "./../models/jogosModel.js";
 
 export const listarTodos = async (req, res) => { //Colocar filtros
   try {
+    const jogos = await JogosModel.findAll();
+
     if (!jogos || jogos.length === 0) {
       res.status(404).json({
         status: 404,
         total: jogos.length,
-        message: "Não há jogos retrô nessa lista",
+        message: "Não há jogos retrô nessa lista", jogos
       });
     }
 
-    let resultado = jogos;
+    res.status(200).json({
+        total: jogos.length,
+        message: "Lista de jogos retrô",
+        jogos,
+      });
 
     const { id, jogo, console, genero, anoLancamento, desenvolvedora, condicao, preco, raridade } = req.query;
+
+    let resultado = jogos
   
     if (console) {
       resultado = resultado.filter(j => j.console.toLowerCase().includes(console.toLowerCase()));
@@ -30,16 +38,11 @@ export const listarTodos = async (req, res) => { //Colocar filtros
       resultado = resultado.filter(j => j.raridade.toLowerCase().includes(raridade.toLowerCase()));
     }
 
-    res.status(200).json({
-      total: jogos.length,
-      message: "Lista de jogos retrô",
-      jogos,
-    });
-  } catch (error) {
+  } catch (erro) {
     res.status(500).json({
       status: 500,
       erro: "Erro interno de servidor",
-      details: error.message,
+      details: erro.message,
     });
   }
 
@@ -93,7 +96,13 @@ export const criar = async (req, res) => {  //Aqui vão as regras de negócio
         if (anoLancamento > 2000) {
             return res.status(400).json({
                 erro: 'O ano de lançamento deve ser anterior a 2000, caso contrário o jogo não é retrô'
-            })
+            });
+        }
+
+        if (preco < 0) {
+            return res.status(400)({
+                erro: 'O preço deve ser maior que 0 (zero)'
+            });
         }
 
         const novoJogo = await JogosModel.criar(req.body)
@@ -150,6 +159,18 @@ export const atualizar = async (req, res) => {  //Aqui vão as regras de negóci
             return res.status(404).json({
                 erro: 'Nenhum jogo foi encontrado com esse id',
                 id: id
+            });
+        }
+
+        if (anoLancamento > 2000) {
+            return res.status(400).json({
+                erro: 'O ano de lançamento deve ser anterior a 2000, caso contrário o jogo não é retrô'
+            });
+        }
+
+        if (preco < 0) {
+            return res.status(400)({
+                erro: 'O preço deve ser maior que 0 (zero)'
             });
         }
 

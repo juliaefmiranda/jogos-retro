@@ -10,7 +10,7 @@ const jogos = [
       anoLancamento: 1988,
       desenvolvedora: "Nintendo",
       condicao: "Completo na Caixa (CIB)",
-      preco: 450.00, // Representado em Reais (R$)
+      preco: 450.00, 
       raridade: "Comum/Médio"
     },
     {
