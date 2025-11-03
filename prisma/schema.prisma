@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client"
+  output = ""
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Jogos {
+  id             Int    @id @default(autoincrement())
+  jogo           String
+  console        String
+  genero         String
+  anoLancamento  Int
+  desenvolvedora String
+  condicao       String
+  preco          Float
+  raridade       String
+
+  @@map("jogos")
+}
